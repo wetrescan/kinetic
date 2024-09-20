@@ -21,12 +21,10 @@ public abstract class NoVanillaGravity {
         Vec3d currentMotion = entity.getVelocity();
 
         // Apply your custom gravity logic here
-        double customGravity = 0.08; // Your custom gravity constant
+        double customGravity = -0.001; // Your custom gravity constant
         Vec3d newMotion = new Vec3d(currentMotion.x, currentMotion.y + customGravity, currentMotion.z);
 
         // Set the new velocity with custom gravity applied
         entity.setVelocity(newMotion);
-
-        System.out.println("Custom gravity applied: " + newMotion);
     }
 }
