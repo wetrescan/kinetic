@@ -1,0 +1,14 @@
+{
+	"required": true,
+	"package": "net.wecan.kinetic.mixin",
+	"compatibilityLevel": "JAVA_17",
+	"mixins": [
+		"NoFallDamage",
+		"VelocityLogger",
+		"NoVanillaGravity",
+		//"MaxFallSpeed"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}

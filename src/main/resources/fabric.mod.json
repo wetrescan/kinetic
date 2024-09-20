@@ -1,0 +1,37 @@
+{
+	"schemaVersion": 1,
+	"id": "kinetic",
+	"version": "0.0.1",
+	"name": "Kinetic",
+	"description": "Kinetic is all about bringing you a realistic kinetic energy damage system!",
+	"authors": [
+		"Me!"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/kinetic/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"net.wecan.kinetic.Kinetic"
+		],
+		"fabric-datagen": [
+			"net.wecan.kinetic.KineticDataGenerator"
+		]
+	},
+	"mixins": [
+		"kinetic.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.15.0",
+		"minecraft": "~1.20.1",
+		"java": ">=17",
+		"fabric-api": "*"
+	},
+	"suggests": {
+		"another-mod": "*"
+	}
+}
