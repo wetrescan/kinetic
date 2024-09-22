@@ -10,23 +10,16 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(LivingEntity.class)
 public abstract class NoVanillaGravity {
 
-    @Inject(
-            method = "tickMovement",
-            at = @At("HEAD")
-    )
-    private void applyCustomGravity(CallbackInfo info) {
+    // Injecting after velocity is applied to modify gravity effects
+    @Inject(method = "tickMovement", at = @At("TAIL"))
+    private void removeGravity(CallbackInfo ci) {
         LivingEntity entity = (LivingEntity) (Object) this;
 
-        // Get the current motion/velocity
-        Vec3d currentMotion = entity.getVelocity();
+        // Get the entity's current velocity
+        Vec3d velocity = entity.getVelocity();
 
-        // Apply your custom gravity logic here
-        double customGravity = 0.08; // Your custom gravity constant
-        Vec3d newMotion = new Vec3d(currentMotion.x, currentMotion.y + customGravity, currentMotion.z);
-
-        // Set the new velocity with custom gravity applied
-        entity.setVelocity(newMotion);
-
-        System.out.println("Custom gravity applied: " + newMotion);
+        // Set Y velocity to 0 to cancel gravity's downward force
+        entity.setVelocity(velocity.x, 0, velocity.z);
     }
 }
+

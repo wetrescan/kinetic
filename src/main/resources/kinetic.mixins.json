@@ -5,7 +5,8 @@
 	"mixins": [
 		"NoFallDamage",
 		"VelocityLogger",
-		"NoVanillaGravity",
+		// "NoVanillaGravity",
+		"RealisticGravity"
 		//"MaxFallSpeed"
 	],
 	"injectors": {
