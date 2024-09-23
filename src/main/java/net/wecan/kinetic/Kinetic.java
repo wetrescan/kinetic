@@ -1,6 +1,7 @@
 package net.wecan.kinetic;
 
 import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -10,6 +11,7 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
+import net.wecan.kinetic.config.GravityConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,75 +36,60 @@ public class Kinetic implements ModInitializer {
 
 		LOGGER.info("kkkkinetic");
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
-			dispatcher.register(literal("maincommand")
-					.then(literal("firstsubcommand")
+			dispatcher.register(CommandManager.literal("gravity")
+					.then(CommandManager.literal("value")
 							.executes(context -> {
-								context.getSource().getClass(Text.literal("Executed /maincommand firstsubcommand!"), false);
-								return Command.SINGLE_SUCCESS;
+								double gravity = GravityConfig.GRAVITY;
+								context.getSource().sendFeedback(() -> Text.literal("Current gravity value: " + gravity), false);
+								return 1;
 							})
-							.then(literal("firstsubsubcommand")
+							.then(CommandManager.argument("new_value", DoubleArgumentType.doubleArg())
 									.executes(context -> {
-										context.getSource().getClass(Text.literal("Executed /maincommand firstsubcommand firstsubsubcommand!"), false);
-										return Command.SINGLE_SUCCESS;
+										double newGravity = DoubleArgumentType.getDouble(context, "new_value");
+										GravityConfig.GRAVITY = newGravity;
+										context.getSource().sendFeedback(() -> Text.literal("New gravity value set to: " + newGravity), false);
+										return 1;
 									})
 							)
 					)
-					.then(literal("secondsubcommand")
-							.then(argument("number", IntegerArgumentType.integer())
-									.executes(context -> {
-										int number = IntegerArgumentType.getInteger(context, "number");
-										context.getSource().getClass(Text.literal("Executed /maincommand secondsubcommand with number: " + number), false);
-										return Command.SINGLE_SUCCESS;
-									})
-									.then(literal("secondsubsubcommand")
-											.executes(context -> {
-												int number = IntegerArgumentType.getInteger(context, "number");
-												context.getSource().getClass(Text.literal("Executed /maincommand secondsubcommand secondsubsubcommand with number: " + number), false);
-												return Command.SINGLE_SUCCESS;
-											})
-									)
-							)
+					.then(CommandManager.literal("direction")
+							.executes(context -> {
+								String direction = GravityConfig.DIRECTION;
+								context.getSource().sendFeedback(() -> Text.literal("Current direction: " + direction), false);
+								return 1;
+							})
+							.then(CommandManager.literal("south").executes(context -> {
+								GravityConfig.DIRECTION = "south";
+								context.getSource().sendFeedback(() -> Text.literal("Direction set to: south"), false);
+								return 1;
+							}))
+							.then(CommandManager.literal("east").executes(context -> {
+								GravityConfig.DIRECTION = "east";
+								context.getSource().sendFeedback(() -> Text.literal("Direction set to: east"), false);
+								return 1;
+							}))
+							.then(CommandManager.literal("west").executes(context -> {
+								GravityConfig.DIRECTION = "west";
+								context.getSource().sendFeedback(() -> Text.literal("Direction set to: west"), false);
+								return 1;
+							}))
+							.then(CommandManager.literal("north").executes(context -> {
+								GravityConfig.DIRECTION = "north";
+								context.getSource().sendFeedback(() -> Text.literal("Direction set to: north"), false);
+								return 1;
+							}))
+							.then(CommandManager.literal("up").executes(context -> {
+								GravityConfig.DIRECTION = "up";
+								context.getSource().sendFeedback(() -> Text.literal("Direction set to: up"), false);
+								return 1;
+							}))
+							.then(CommandManager.literal("down").executes(context -> {
+								GravityConfig.DIRECTION = "down";
+								context.getSource().sendFeedback(() -> Text.literal("Direction set to: down"), false);
+								return 1;
+							}))
 					)
 			);
 		});
-	}
-
-
-
-	private int executeDirection(CommandContext<ServerCommandSource> context) {
-		context.getSource().sendFeedback((Supplier<Text>) Text.literal("Executed Direction"), false);
-		return Command.SINGLE_SUCCESS;
-	}
-
-	private int executeSouth(CommandContext<ServerCommandSource> context) {
-		context.getSource().sendFeedback((Supplier<Text>) Text.literal("Executed south"), false);
-		return Command.SINGLE_SUCCESS;
-	}
-
-	private int executeNorth(CommandContext<ServerCommandSource> context) {
-		context.getSource().sendFeedback((Supplier<Text>) Text.literal("Executed north"), false);
-		return Command.SINGLE_SUCCESS;
-	}
-
-	private int executeEast(CommandContext<ServerCommandSource> context) {
-		context.getSource().sendFeedback((Supplier<Text>) Text.literal("Executed East"), false);
-		return Command.SINGLE_SUCCESS;
-	}
-
-	private int executeWest(CommandContext<ServerCommandSource> context) {
-		context.getSource().sendFeedback((Supplier<Text>) Text.literal("Executed west"), false);
-		return Command.SINGLE_SUCCESS;
-	}
-
-	private int executeValue(CommandContext<ServerCommandSource> context) {
-		context.getSource().sendFeedback(Text.literal("Executed value"), false);
-		return Command.SINGLE_SUCCESS;
-	}
-
-	private int executeNumber(CommandContext<ServerCommandSource> context) {
-		// Get the number argument
-		int number = IntegerArgumentType.getInteger(context, "number");
-		context.getSource().sendFeedback(Text.literal("Executed number with number " + number), false);
-		return Command.SINGLE_SUCCESS;
 	}
 }
