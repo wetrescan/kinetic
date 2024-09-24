@@ -3,13 +3,19 @@ package net.wecan.kinetic.mixin;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.Vec3d;
 import net.wecan.kinetic.config.GravityConfig;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(LivingEntity.class)
 public abstract class RealisticGravity {
+
+    @Shadow @Final public static double GRAVITY;
+
+    @Shadow public abstract void enterCombat();
 
     // private static final double GRAVITY = 9.807; // m/s^2
     private static final double CONVERTED_GRAVITY = GravityConfig.GRAVITY * (32/9.807); //so that the real life gravity (9.807) is considered to 32m/s^2 on minecraft
@@ -44,11 +50,20 @@ public abstract class RealisticGravity {
 
         // Update the Y-velocity using net acceleration
         double deltaTime = 0.05; // Time step
-        double newVelocityY = velocity.y - netAcceleration * deltaTime + 0.078; // 0.08 is (in theory) the vanilla gravity
+        double vanillaGravityCompensation = 0.078;
+        double newVelocityY = velocity.y - netAcceleration * deltaTime + vanillaGravityCompensation; // 0.08 is (in theory) the vanilla gravity
+        double newVelocityZ = velocity.z - netAcceleration * deltaTime;
 
         // Set the new velocity while preserving X and Z components
-        entity.setVelocity(velocity.x, newVelocityY, velocity.z);
-
+        if (GravityConfig.DIRECTION.equals("down")) {
+            entity.setVelocity(velocity.x, newVelocityY, velocity.z);
+        } else if (GravityConfig.DIRECTION.equals("up")) {
+            entity.setVelocity(velocity.x, -(newVelocityY) + vanillaGravityCompensation, velocity.z);
+        } else if (GravityConfig.DIRECTION.equals("east")) {
+            entity.setVelocity(velocity.x, velocity.y  + vanillaGravityCompensation, newVelocityZ);
+        } else if (GravityConfig.DIRECTION.equals("west")) {
+            entity.setVelocity(velocity.x, velocity.y  + vanillaGravityCompensation, -newVelocityZ);
+        }
         // If you want to ensure no base gravity is applied, also set the Y velocity to the computed value directly
         // This may vary based on how you want to handle interactions with other game mechanics.
     }
