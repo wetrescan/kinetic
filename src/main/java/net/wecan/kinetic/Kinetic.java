@@ -8,9 +8,16 @@ import com.mojang.brigadier.context.CommandContext;
 import net.fabricmc.api.ModInitializer;
 
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.damage.DamageType;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 import net.wecan.kinetic.config.GravityConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,13 +35,18 @@ public class Kinetic implements ModInitializer {
 	// That way, it's clear which mod wrote info, warnings, and errors.
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
+	public static final RegistryKey<DamageType> KINETIC_DAMAGE = RegistryKey.of(RegistryKeys.DAMAGE_TYPE, new Identifier("kinetic", "velocity"));
+
 	@Override
 	public void onInitialize() {
 		// This code runs as soon as Minecraft is in a mod-load-ready state.
 		// However, some things (like resources) may still be uninitialized.
 		// Proceed with mild caution.
 
+
 		LOGGER.info("kkkkinetic");
+
+
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
 			dispatcher.register(CommandManager.literal("gravity")
 					.then(CommandManager.literal("value")

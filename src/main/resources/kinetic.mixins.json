@@ -4,9 +4,9 @@
 	"compatibilityLevel": "JAVA_17",
 	"mixins": [
 		"NoFallDamage",
-		"VelocityLogger",
-		// "NoVanillaGravity",
-		"RealisticGravity"
+		//"VelocityLogger",
+		"RealisticGravity",
+		"RealisticSmashDamage"
 		//"MaxFallSpeed"
 	],
 	"injectors": {

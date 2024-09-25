@@ -55,6 +55,7 @@ public abstract class RealisticGravity {
         double newVelocityZ = velocity.z - netAcceleration * deltaTime;
 
         // Set the new velocity while preserving X and Z components
+        //if (entity.isOnGround()) {
         if (GravityConfig.DIRECTION.equals("down")) {
             entity.setVelocity(velocity.x, newVelocityY, velocity.z);
         } else if (GravityConfig.DIRECTION.equals("up")) {
