@@ -61,6 +61,31 @@ public class Kinetic implements ModInitializer {
 										return 1;
 									})
 							)
+							.then(CommandManager.literal("default").executes(context -> {
+								GravityConfig.GRAVITY = Double.valueOf("9.807");
+								context.getSource().sendFeedback(() -> Text.literal("Smash multiplier set to: default (9.807)"), true);
+								return 1;
+							}))
+					)
+					.then(CommandManager.literal("smash")
+							.executes(context -> {
+								double smashMultiplier = GravityConfig.SMASH_MULTIPLIER;
+								context.getSource().sendFeedback(() -> Text.literal("Current smash multiplier: " + smashMultiplier), false);
+								return 1;
+							})
+							.then(CommandManager.argument("new_value", DoubleArgumentType.doubleArg())
+									.executes(context -> {
+										double newSmashMultiplier = DoubleArgumentType.getDouble(context, "new_value");
+										GravityConfig.SMASH_MULTIPLIER = newSmashMultiplier;
+										context.getSource().sendFeedback(() -> Text.literal("New smash value set to: " + newSmashMultiplier), false);
+										return 1;
+									})
+							)
+							.then(CommandManager.literal("1.7").executes(context -> {
+								GravityConfig.SMASH_MULTIPLIER = Double.valueOf("1.7");
+								context.getSource().sendFeedback(() -> Text.literal("Smash multiplier set to: default (1.7)"), true);
+								return 1;
+							}))
 					)
 					.then(CommandManager.literal("direction")
 							.executes(context -> {
@@ -70,32 +95,32 @@ public class Kinetic implements ModInitializer {
 							})
 							.then(CommandManager.literal("south").executes(context -> {
 								GravityConfig.DIRECTION = "south";
-								context.getSource().sendFeedback(() -> Text.literal("Direction set to: south"), false);
+								context.getSource().sendFeedback(() -> Text.literal("Direction set to: south"), true);
 								return 1;
 							}))
 							.then(CommandManager.literal("east").executes(context -> {
 								GravityConfig.DIRECTION = "east";
-								context.getSource().sendFeedback(() -> Text.literal("Direction set to: east"), false);
+								context.getSource().sendFeedback(() -> Text.literal("Direction set to: east"), true);
 								return 1;
 							}))
 							.then(CommandManager.literal("west").executes(context -> {
 								GravityConfig.DIRECTION = "west";
-								context.getSource().sendFeedback(() -> Text.literal("Direction set to: west"), false);
+								context.getSource().sendFeedback(() -> Text.literal("Direction set to: west"), true);
 								return 1;
 							}))
 							.then(CommandManager.literal("north").executes(context -> {
 								GravityConfig.DIRECTION = "north";
-								context.getSource().sendFeedback(() -> Text.literal("Direction set to: north"), false);
+								context.getSource().sendFeedback(() -> Text.literal("Direction set to: north"), true);
 								return 1;
 							}))
 							.then(CommandManager.literal("up").executes(context -> {
 								GravityConfig.DIRECTION = "up";
-								context.getSource().sendFeedback(() -> Text.literal("Direction set to: up"), false);
+								context.getSource().sendFeedback(() -> Text.literal("Direction set to: up"), true);
 								return 1;
 							}))
 							.then(CommandManager.literal("down").executes(context -> {
 								GravityConfig.DIRECTION = "down";
-								context.getSource().sendFeedback(() -> Text.literal("Direction set to: down"), false);
+								context.getSource().sendFeedback(() -> Text.literal("Direction set to: down"), true);
 								return 1;
 							}))
 					)

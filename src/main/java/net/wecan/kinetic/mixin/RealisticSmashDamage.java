@@ -8,6 +8,7 @@ import net.minecraft.enchantment.Enchantments;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.wecan.kinetic.config.GravityConfig;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
@@ -80,7 +81,7 @@ public abstract class RealisticSmashDamage {
 
     // Custom method to calculate damage based on dissipated energy and Feather Falling
     private float calculateDamageBasedOnEnergy(double dissipatedEnergy, LivingEntity entity) {
-        float damageAmount = (float)(dissipatedEnergy * 1.7); // Base damage
+        float damageAmount = (float)(dissipatedEnergy * GravityConfig.SMASH_MULTIPLIER); // Base damage
 
         // Apply Feather Falling reduction
         int featherFallingLevel = EnchantmentHelper.getEquipmentLevel(Enchantments.FEATHER_FALLING, entity);
