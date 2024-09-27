@@ -1,12 +1,10 @@
 package net.wecan.kinetic.mixin;
 
-import net.minecraft.entity.DamageUtil;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.damage.DamageType;
-import net.minecraft.entity.damage.DamageTypes;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.entity.effect.StatusEffects;
+import net.minecraft.item.ItemStack;
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -17,8 +15,6 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import java.rmi.registry.Registry;
 
 @Mixin(LivingEntity.class)
 public abstract class RealisticSmashDamage {
@@ -53,13 +49,17 @@ public abstract class RealisticSmashDamage {
 
             if (dissipatedEnergy > 1.1) {
                 LOGGER.info("Energy dissipated due to collision: " + dissipatedEnergy);
+
+                // Apply damage based on the dissipated energy, considering Feather Falling
+                float damageAmount = calculateDamageBasedOnEnergy(dissipatedEnergy, entity);
+                entity.damage(entity.getWorld().getDamageSources().fall(), damageAmount);
             }
 
-            // Log the current energy values for each axis
-//            LOGGER.info("Current energy on X axis: " + energyX);
-//            LOGGER.info("Current energy on Y axis: " + energyY);
-//            LOGGER.info("Current energy on Z axis: " + energyZ);
-            //LOGGER.info("Total current energy: " + totalCurrentEnergy);
+            // Log the current energy values for each axis (optional)
+            // LOGGER.info("Current energy on X axis: " + energyX);
+            // LOGGER.info("Current energy on Y axis: " + energyY);
+            // LOGGER.info("Current energy on Z axis: " + energyZ);
+            // LOGGER.info("Total current energy: " + totalCurrentEnergy);
         }
 
         // Update previous values for the next tick
@@ -78,20 +78,22 @@ public abstract class RealisticSmashDamage {
         return !world.isSpaceEmpty(entity, boundingBox.shrink(0.01, 0.01, 0.01));
     }
 
-//    private void applyDamage(CallbackInfo info, DamageUtil damageUtil, LivingEntity entity, World world) {
-//        // acces the damage type.FALL
-//        RegistryEntry<DamageType> fallDamageType = world.getRegistryManager()
-//                .get(Registries.<DamageType>)
-//                .entryOf(DamageTypes.FALL);
-//
-//        // calculate the damage depending on the kinetic energy
-//        float damageAmount = this.calculateDamageBasedOnEnergy();
-//
-//        entity.damage(new DamageSource(fallDamageType), 1.0f);
-//    }
-//    // Custom method to calculate damage based on the block's hotness value
-//    private float calculateDamageBasedOnEnergy() {
-//        // Example logic: damage increases proportionally to the hotness value
-//        return this. * 2.0f; // E.g., hotness 1.0 = 2 damage, hotness 2.0 = 4 damage
-//    }
+    // Custom method to calculate damage based on dissipated energy and Feather Falling
+    private float calculateDamageBasedOnEnergy(double dissipatedEnergy, LivingEntity entity) {
+        float damageAmount = (float)(dissipatedEnergy * 1.7); // Base damage
+
+        // Apply Feather Falling reduction
+        int featherFallingLevel = EnchantmentHelper.getEquipmentLevel(Enchantments.FEATHER_FALLING, entity);
+        int protectionLevel = EnchantmentHelper.getEquipmentLevel(Enchantments.PROTECTION, entity);
+        if (featherFallingLevel > 0) {
+            float reduction = 1.0f - (featherFallingLevel * 0.12f); // 12% reduction per level
+            damageAmount *= reduction;
+        }
+        if (protectionLevel > 0) {
+            float reduction = 1.0f - (protectionLevel * 0.04f); // 4% reduction per level
+            damageAmount *= reduction;
+        }
+        return damageAmount;
+    }
 }
+

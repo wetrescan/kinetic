@@ -25,21 +25,24 @@ public abstract class FallingFovChanger {
         double upwardThreshold = 0.5F;
         double horizontalThreshold = 0.1F;
 
+        // Define the power factor (values > 1.0 will make the increase slower at the start and faster at the end)
+        double powerFactor = 2.0;
+
         // Falling FOV adjustment (downward)
         if (yVelocity < -fallThreshold) {
-            float fallVelocityFactor = 1.0F + (float) Math.sqrt(Math.abs(yVelocity) - fallThreshold) * 0.1F;
+            float fallVelocityFactor = 1.0F + (float) Math.pow(Math.abs(yVelocity) - fallThreshold, 1 / powerFactor) * 0.1F;
             originalFov *= fallVelocityFactor;
         }
 
         // Rising FOV adjustment (upward)
         if (yVelocity > upwardThreshold) {
-            float riseVelocityFactor = 1.0F + (float) Math.sqrt(yVelocity - upwardThreshold) * 0.05F;
+            float riseVelocityFactor = 1.0F + (float) Math.pow(yVelocity - upwardThreshold, 1 / powerFactor) * 0.05F;
             originalFov *= riseVelocityFactor;
         }
 
         // Horizontal movement FOV adjustment
         if (xzVelocity > horizontalThreshold) {
-            float horizontalVelocityFactor = 1.0F + (float) Math.sqrt(xzVelocity - horizontalThreshold) * 0.03F;
+            float horizontalVelocityFactor = 1.0F + (float) Math.pow(xzVelocity - horizontalThreshold, 1 / powerFactor) * 0.03F;
             originalFov *= horizontalVelocityFactor;
         }
 
