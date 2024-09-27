@@ -1,18 +1,29 @@
 package net.wecan.kinetic.mixin;
 
+import net.minecraft.entity.DamageUtil;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.damage.DamageType;
+import net.minecraft.entity.damage.DamageTypes;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.rmi.registry.Registry;
+
 @Mixin(LivingEntity.class)
 public abstract class RealisticSmashDamage {
+
+    @Shadow protected abstract void attackLivingEntity(LivingEntity target);
 
     private Vec3d previousVelocity = Vec3d.ZERO; // Previous velocity
     private double previousEnergy = 0; // Track previous energy to calculate energy dissipated
@@ -66,4 +77,21 @@ public abstract class RealisticSmashDamage {
         // Use the correct method signature for shrink with three arguments (X, Y, Z)
         return !world.isSpaceEmpty(entity, boundingBox.shrink(0.01, 0.01, 0.01));
     }
+
+//    private void applyDamage(CallbackInfo info, DamageUtil damageUtil, LivingEntity entity, World world) {
+//        // acces the damage type.FALL
+//        RegistryEntry<DamageType> fallDamageType = world.getRegistryManager()
+//                .get(Registries.<DamageType>)
+//                .entryOf(DamageTypes.FALL);
+//
+//        // calculate the damage depending on the kinetic energy
+//        float damageAmount = this.calculateDamageBasedOnEnergy();
+//
+//        entity.damage(new DamageSource(fallDamageType), 1.0f);
+//    }
+//    // Custom method to calculate damage based on the block's hotness value
+//    private float calculateDamageBasedOnEnergy() {
+//        // Example logic: damage increases proportionally to the hotness value
+//        return this. * 2.0f; // E.g., hotness 1.0 = 2 damage, hotness 2.0 = 4 damage
+//    }
 }
