@@ -1,17 +1,17 @@
 {
 	"schemaVersion": 1,
 	"id": "kinetic",
-	"version": "0.0.1",
+	"version": "0.1.0",
 	"name": "Kinetic",
 	"description": "Kinetic is all about bringing you a realistic kinetic energy damage system!",
 	"authors": [
 		"Me!"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
+		"homepage": "https://modrinth.com/mod/kinetic",
 		"sources": "https://github.com/FabricMC/fabric-example-mod"
 	},
-	"license": "CC0-1.0",
+	"license": "MIT",
 	"icon": "assets/kinetic/icon.png",
 	"environment": "*",
 	"entrypoints": {
