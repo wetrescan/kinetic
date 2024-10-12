@@ -40,45 +40,42 @@ public abstract class RealisticGravity {
         double dragAcceleration = dragForce / mass; // Drag effect
         double netAcceleration = (CONVERTED_GRAVITY - dragAcceleration) * 0.05;
 
-        // Update the velocity using net acceleration for each axis
+        // Update the Y-velocity using net acceleration
         double deltaTime = 0.05; // Time step
         double vanillaGravityCompensation = 0.078;
+        double newVelocityY = velocity.y - netAcceleration * deltaTime + vanillaGravityCompensation;
 
+        // Template calculations for each direction
         double newVelocityX = velocity.x;
-        double newVelocityY = velocity.y + vanillaGravityCompensation;
         double newVelocityZ = velocity.z;
-
-        newVelocityX += vanillaGravityCompensation;
-        newVelocityZ += vanillaGravityCompensation;
-
-        newVelocityX += vanillaGravityCompensation;
-        newVelocityZ += vanillaGravityCompensation;
 
         switch (GravityConfig.DIRECTION.toLowerCase()) {
             case "down":
-                newVelocityY = velocity.y - netAcceleration * deltaTime + vanillaGravityCompensation;
+                entity.setVelocity(velocity.x, newVelocityY, velocity.z);
                 break;
             case "up":
                 newVelocityY = -velocity.y - netAcceleration * deltaTime + vanillaGravityCompensation;
+                entity.setVelocity(velocity.x, newVelocityY, velocity.z);
                 break;
             case "east":
                 newVelocityX = velocity.x + netAcceleration * deltaTime;
+                entity.setVelocity(newVelocityX, velocity.y, velocity.z);
                 break;
             case "west":
                 newVelocityX = velocity.x - netAcceleration * deltaTime;
+                entity.setVelocity(newVelocityX, velocity.y, velocity.z);
                 break;
             case "north":
                 newVelocityZ = velocity.z - netAcceleration * deltaTime;
+                entity.setVelocity(velocity.x, velocity.y, newVelocityZ);
                 break;
             case "south":
                 newVelocityZ = velocity.z + netAcceleration * deltaTime;
+                entity.setVelocity(velocity.x, velocity.y, newVelocityZ);
                 break;
             default:
                 // No gravity modification if direction is unknown
                 break;
         }
-
-        // Set the new velocity
-        entity.setVelocity(newVelocityX, newVelocityY, newVelocityZ);
     }
 }
